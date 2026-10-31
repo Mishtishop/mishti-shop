@@ -67,6 +67,12 @@ figure{margin:0}
 .btn:hover{transform:translateY(-2px);filter:brightness(1.1)}
 .btn-light{background:#fff;color:var(--accent)}
 
+/* Dropdown */
+.jump{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;margin:0 0 26px}
+.jump label{font-weight:700;color:var(--muted);font-size:.92rem}
+.jump select{appearance:none;-webkit-appearance:none;font:600 16px var(--sans);color:var(--ink);min-height:48px;max-width:100%;width:340px;padding:10px 44px 10px 18px;border:1.5px solid var(--accent);border-radius:50px;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'%3E%3Cpath d='M1 1l6 6 6-6' fill='none' stroke='%236f6578' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 18px center;cursor:pointer;transition:border-color .4s}
+@media (max-width:600px){.jump{flex-direction:column;gap:6px}.jump select{width:100%}}
+
 /* Thumbnails */
 .thumbs{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px;margin-top:36px;padding:0;list-style:none}
 .thumbs button{display:block;width:100%;padding:0;border:2px solid transparent;border-radius:14px;background:#fff;overflow:hidden;cursor:pointer;opacity:.7;box-shadow:0 2px 8px rgba(30,20,40,.08);transition:.2s}
@@ -146,6 +152,10 @@ dialog img{max-width:calc(96vw - 24px);max-height:80vh;width:auto;height:auto;bo
 
   <section class="showcase" id="products" aria-label="Our candles">
     <div class="wrap">
+      <div class="jump">
+        <label for="candle-select">Choose a candle</label>
+        <select id="candle-select"></select>
+      </div>
       <div class="stage">
         <figure class="photo-card" id="gallery">
           <button class="nav prev" id="prev" type="button" aria-label="Previous candle">‹</button>
@@ -231,10 +241,20 @@ products.forEach((p, i) => {
   li.appendChild(b); thumbs.appendChild(li);
 });
 
+/* Dropdown */
+const dropdown = $("candle-select");
+products.forEach((p, i) => {
+  const o = document.createElement("option");
+  o.value = i; o.textContent = p.name;
+  dropdown.appendChild(o);
+});
+dropdown.addEventListener("change", () => select(Number(dropdown.value), true));
+
 function select(index, setHash) {
   const i = (index + products.length) % products.length;
   const p = products[i];
   current = i;
+  dropdown.value = i;
 
   root.style.setProperty("--accent", p.accent);
   root.style.setProperty("--tint", p.tint);
